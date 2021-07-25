@@ -1,29 +1,13 @@
 '''Advent of Code 2015 day 1: Not Quite Lisp
    https://adventofcode.com/2015/day/1'''
 
-from aoc2015 import __version__
 
+def process(instructions):
+    '''Generate a sequence of (position, floor) for the given instructions.
 
-def find_floor(instructions):
-    '''Find the floor Santa ends up on after following the instructions
+    Start at floor 0; go up a floor for each '(' and down a floor for each ')'
 
-    Start at floor 0; go up a floor for each ( and down a floor for each )
-
-    Returns the resulting floor.
-    '''
-    floor = 0
-    for instr in instructions:
-        if instr == '(':
-            floor += 1
-        else:
-            floor -= 1
-    return floor
-
-
-def first_basement_entry(instructions):
-    '''Find the position of the instruction where we first enter the basement
-
-    Following the same rules as find_floor. The position counts from 1.
+    The position counts from 1.
     '''
     floor = 0
     for pos, instr in enumerate(instructions):
@@ -31,8 +15,21 @@ def first_basement_entry(instructions):
             floor += 1
         else:
             floor -= 1
+        yield pos + 1, floor
+
+
+def find_floor(instructions):
+    '''Find the floor Santa ends up on after following the instructions'''
+    *_, (_pos, floor) = process(instructions)  # Unpacking per PEP 448!
+    return floor
+
+
+def first_basement_entry(instructions):
+    '''Find the first instruction where we enter the basement
+    Return 0 if we never do.'''
+    for pos, floor in process(instructions):
         if floor < 0:
-            return pos + 1
+            return pos
     return 0
 
 
