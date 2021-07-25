@@ -1,25 +1,19 @@
-import pytest
-
-from aoc2015.core import fib, main
-
-__author__ = "Cian Synnott"
-__copyright__ = "Cian Synnott"
-__license__ = "MIT"
+from aoc2015.core import dispatch
 
 
-def test_fib():
-    """API Tests"""
-    assert fib(1) == 1
-    assert fib(2) == 1
-    assert fib(7) == 13
-    with pytest.raises(AssertionError):
-        fib(-10)
-
-
-def test_main(capsys):
-    """CLI Tests"""
+def test_dispatch_fail(capsys):
+    '''Dispatch fails properly when passed a bad day'''
     # capsys is a pytest fixture that allows asserts agains stdout/stderr
     # https://docs.pytest.org/en/stable/capture.html
-    main(["7"])
+    dispatch(['204'])
     captured = capsys.readouterr()
-    assert "The 7-th Fibonacci number is 13" in captured.out
+    assert 'No module named aoc2015.day204' in captured.out
+
+
+def test_dispatch_day0(capsys):
+    '''Dispatch to "template" day0 module works'''
+    # capsys is a pytest fixture that allows asserts agains stdout/stderr
+    # https://docs.pytest.org/en/stable/capture.html
+    dispatch(['0', 'arg1', 'arg2'])
+    captured = capsys.readouterr()
+    assert "day0: ['arg1', 'arg2']" in captured.out
