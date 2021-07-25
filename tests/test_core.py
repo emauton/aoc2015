@@ -1,6 +1,6 @@
 import pytest
 
-from aoc2015.skeleton import fib, main
+from aoc2015.core import fib, main
 
 __author__ = "Cian Synnott"
 __copyright__ = "Cian Synnott"
