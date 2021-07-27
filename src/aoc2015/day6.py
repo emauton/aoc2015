@@ -6,7 +6,7 @@ import re
 import collections
 
 
-Instruction = collections.namedtuple('Operation', ['op', 'start', 'end'])
+Instruction = collections.namedtuple('Instruction', ['op', 'start', 'end'])
 
 
 INSTRUCTION_PATTERN = re.compile(r'^(.*) (\d+),(\d+) through (\d+),(\d+)$')
