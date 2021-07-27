@@ -1,0 +1,18 @@
+version: 2.1
+
+workflows:
+  test: 
+    jobs:
+      - test
+
+jobs:
+  test:
+    docker:
+      - image: cimg/python:3.9
+    
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          # This assumes pytest is installed via the install-package step above
+          command: tox
