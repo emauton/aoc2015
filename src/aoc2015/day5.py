@@ -5,10 +5,6 @@
 import re
 
 
-def contains_any(string, subs):
-    any([s in string for s in subs])
-
-
 DOUBLE_PATTERN = re.compile(r'(.)\1')
 PAIR_REPEAT_PATTERN = re.compile(r'(..).*\1')
 SANDWICH_PATTERN = re.compile(r'(.).\1')
