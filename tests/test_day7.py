@@ -1,4 +1,4 @@
-from aoc2015.day7 import (Instruction, parse, make_wire_map, resolve)
+from aoc2015.day7 import (Instruction, parse, make_wire_map, get_resolver)
 
 
 def test_parse():
@@ -24,8 +24,9 @@ def test_resolve():
                     'NOT y -> i']
 
     wire_map = make_wire_map(instructions)
+    resolve = get_resolver(wire_map)
 
-    assert resolve('d', wire_map) == 72
-    assert resolve('e', wire_map) == 435
-    assert resolve('f', wire_map) == 492
-    assert resolve('g', wire_map) == 114
+    assert resolve('d') == 72
+    assert resolve('e') == 435
+    assert resolve('f') == 492
+    assert resolve('g') == 114

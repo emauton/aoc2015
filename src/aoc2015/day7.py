@@ -32,76 +32,62 @@ def make_wire_map(instructions):
     return wire_map
 
 
-def memoize_first_arg(f):
-    '''memoize a wrapped function by first argument only
+def get_resolver(wire_map):
+    '''Return a memoized resolution function closing over a copy of wire_map
 
-    This is built specifically to wrap resolve() below, which has an unhashable
-    second argument and so cannot use functools.cache directly.
+    Since the wire map is unhashable, we can't memoize it directly using
+    functools.cache.
 
-    Since the wire map is "immutable" once built, this is a reasonable
-    workaround.
+    Instead, return a memoized closure with access to a copy of wire_map.
 
-    There are alternatives like closing over the wire map and other ideas, but
-    a recursive, memoized approach feels natural here.
-    '''
-    cache = {}
-
-    @functools.wraps(f)
-    def wrapper(*args, **kwds):
-        if args[0] in cache:
-            return cache[args[0]]
-        else:
-            result = f(*args, **kwds)
-            cache[args[0]] = result
-            return result
-
-    # Provide a method to clear the wrapper's cache per functools' lru_cache
-    def cache_clear():
-        cache.clear()
-
-    wrapper.cache_clear = cache_clear
-    return wrapper
-
-
-@memoize_first_arg
-def resolve(target, wires):
-    '''Resolve a target wire within the wire map
-
-    NB: this is not quite to spec as we're using Python int rather than 16-bit
-    unsigned integers. Wastl appears to have gone easy on us and not made it a
-    point the code can fail on, and it's a faff to fix it up in Python.
+    The returned function takes one argument - a target wire to resolve.
     '''
 
-    if target.isnumeric():
-        return int(target)
+    wires = wire_map.copy()  # A simple map; no need for deepcopy in this case
 
-    instr = wires[target]
+    @functools.cache
+    def resolve(target):
+        '''Resolve a target wire within the wire map
 
-    if instr.op == 'SET':
-        return resolve(instr.args[0], wires)
-    elif instr.op == 'NOT':
-        return ~resolve(instr.args[0], wires)
-    elif instr.op == 'AND':
-        return resolve(instr.args[0], wires) & resolve(instr.args[1], wires)
-    elif instr.op == 'OR':
-        return resolve(instr.args[0], wires) ^ resolve(instr.args[1], wires)
-    elif instr.op == 'RSHIFT':
-        return resolve(instr.args[0], wires) >> resolve(instr.args[1], wires)
-    elif instr.op == 'LSHIFT':
-        return resolve(instr.args[0], wires) << resolve(instr.args[1], wires)
-    else:  # pragma: no cover
-        raise ValueError(f'unrecognized op {instr.op}')
+        NB: this is not quite to spec as we're using Python int rather than 16-bit
+        unsigned integers. Wastl appears to have gone easy on us and not made it a
+        point the code can fail on, and it's a faff to fix it up in Python.
+        '''
+
+        if target.isnumeric():
+            return int(target)
+
+        instr = wires[target]
+
+        if instr.op == 'SET':
+            return resolve(instr.args[0])
+        elif instr.op == 'NOT':
+            return ~resolve(instr.args[0])
+        elif instr.op == 'AND':
+            return resolve(instr.args[0]) & resolve(instr.args[1])
+        elif instr.op == 'OR':
+            return resolve(instr.args[0]) ^ resolve(instr.args[1])
+        elif instr.op == 'RSHIFT':
+            return resolve(instr.args[0]) >> resolve(instr.args[1])
+        elif instr.op == 'LSHIFT':
+            return resolve(instr.args[0]) << resolve(instr.args[1])
+        else:  # pragma: no cover
+            raise ValueError(f'unrecognized op {instr.op}')
+
+    return resolve
 
 
 def run(args):  # pragma: no cover
     filename = args[0]
     with open(filename) as f:
         lines = [line.strip() for line in f.readlines()]
+
     wire_map = make_wire_map(lines)
-    a = resolve('a', wire_map)
+    resolve = get_resolver(wire_map)
+    a = resolve('a')
     print(f'Initially, wire a is provided signal: {a}')
 
-    resolve.cache_clear()
     wire_map['b'] = Instruction('SET', [str(a)])
-    new_a = resolve('a', wire_map)
+    new_resolve = get_resolver(wire_map)
+    new_a = new_resolve('a')
     print(f'After patching, wire a is provided signal: {new_a}')
