@@ -53,7 +53,7 @@ def cookie_vals(ingredients, quantities):
     return score, calories
 
 
-def partition(n, p, maximum = sys.maxsize):
+def partition(n, p, maximum=sys.maxsize):
     '''Generate unique, sorted p-partitions of n
     'maximum' serves our recursive definition - we want to be able to restrict
     partitions to those with a max value in any "column"'''
@@ -98,7 +98,7 @@ def run(args):  # pragma: no cover
     filename = args[0]
     with open(filename) as f:
         lines = [line.strip() for line in f.readlines()]
-    ingredients = [parse(l) for l in lines]
+    ingredients = [parse(line) for line in lines]
     score = highest_score(ingredients, 100)
     print(f'The highest-scoring cookie scores {score}')
 

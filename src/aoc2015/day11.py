@@ -10,7 +10,6 @@ def increment(password):
     if password == 'z' * 8:
         return 'a' * 8
 
-
     # Go via ordinal reps of lowercase chars - probably not the most efficient
     # thing available but it'll do
     numeric = list(reversed([ord(c) for c in password]))
@@ -40,7 +39,7 @@ def contains_straight(password):
     numeric = list([ord(c) for c in password])
     for i in range(0, len(numeric) - 2):
         if (numeric[i+1] == numeric[i] + 1 and
-            numeric[i+2] == numeric[i] + 2):
+                numeric[i+2] == numeric[i] + 2):
             return True
     return False
 
@@ -54,9 +53,9 @@ def contains_doubles(password):
     index = 0
     for i in range(0, len(numeric) - 1):
         if (found and
-            numeric[i+1] == numeric[i] and
-            numeric[i] != found and
-            index != i - 1):
+                numeric[i+1] == numeric[i] and
+                numeric[i] != found and
+                index != i - 1):
             return True
         elif numeric[i+1] == numeric[i]:
             index = i

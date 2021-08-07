@@ -61,7 +61,7 @@ def parse(reindeer):
 
 def race(lines, seconds):
     '''Run a race for the reindeer defined by lines over seconds'''
-    reindeer = [parse(l) for l in lines]
+    reindeer = [parse(line) for line in lines]
 
     for i in range(0, seconds):
         for r in reindeer:

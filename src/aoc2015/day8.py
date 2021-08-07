@@ -42,8 +42,8 @@ def encode_storage(s):
 def diff(lines, fn):
     '''Return diff of #characters in output of fn over lines'''
     total_a, total_b = 0, 0
-    for l in lines:
-        a, b = fn(l)
+    for line in lines:
+        a, b = fn(line)
         total_a += a
         total_b += b
     return total_a - total_b
@@ -54,8 +54,8 @@ def run(args):  # pragma: no cover
     with open(filename) as f:
         lines = [line.strip() for line in f.readlines()]
 
-    l = diff(lines, literal_storage)
-    print(f'Difference in #characters for string literals vs. memory: {l}')
+    literals = diff(lines, literal_storage)
+    print(f'Difference in #characters for string literals vs. memory: {literals}')
 
-    e = diff(lines, encode_storage)
-    print(f'Difference in #characters for string literals vs. encoded: {e}')
+    encoded = diff(lines, encode_storage)
+    print(f'Difference in #characters for string literals vs. encoded: {encoded}')
