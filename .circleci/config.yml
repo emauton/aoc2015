@@ -21,4 +21,4 @@ jobs:
           command: tox
       - run:
           name: Try splitting
-          command: circleci tests glob "tests/test_*" | xargs -n 1 echo
+          command: echo tests/test_* | circleci tests split | xargs -n 1 echo
