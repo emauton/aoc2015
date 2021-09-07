@@ -32,5 +32,6 @@ def test_resolve():
     assert resolve('f') == 492
     assert resolve('g') == 114
 
+
 def test_also_slow():
     time.sleep(20)
