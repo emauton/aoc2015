@@ -20,5 +20,10 @@ jobs:
           name: Run tests
           command: |
             set -e
-            TEST_FILES=$(circleci tests glob "tests/test_*.py" | circleci tests split)
-            tox -- $TEST_FILES
+            TEST_FILES=$(circleci tests glob "tests/test_*.py" | circleci tests split --split-by=timings)
+            mkdir -p test-results
+            tox -- --junitxml=test-results/junit.xml $TEST_FILES
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
