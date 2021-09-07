@@ -1,6 +1,8 @@
 from aoc2015.day18 import (parse, sum_coords, in_grid, neighbours, iteration,
                            lights_on, light_corners)
 
+import time
+
 
 def test_parse():
     text = ['.#.',
@@ -78,3 +80,7 @@ def test_light_corners():
     grid = parse(text)
     light_corners(grid)
     assert lights_on(grid) == 5
+
+
+def test_omg_so_slow():
+    time.sleep(10)
