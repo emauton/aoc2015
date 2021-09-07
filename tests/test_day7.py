@@ -1,5 +1,6 @@
 from aoc2015.day7 import (Instruction, parse, make_wire_map, get_resolver)
 
+import time
 
 def test_parse():
     assert parse('1 -> a') == ('a', Instruction('SET', ['1']))
@@ -30,3 +31,6 @@ def test_resolve():
     assert resolve('e') == 435
     assert resolve('f') == 492
     assert resolve('g') == 114
+
+def test_also_slow():
+    time.sleep(20)
