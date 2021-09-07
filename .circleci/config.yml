@@ -18,7 +18,10 @@ jobs:
           command: pip install tox
       - run:
           name: Run tests
-          command: tox
+          command: |
+            set -e
+            TEST_FILES=$(circleci tests glob "tests/test_*.py" | circleci tests split --split-by=timings)
+            tox -- $TEST_FILES
       - run:
           name: Try splitting
           command: circleci tests glob 'tests/test_*'| circleci tests split
