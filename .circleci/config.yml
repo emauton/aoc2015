@@ -9,7 +9,6 @@ jobs:
   test:
     docker:
       - image: cimg/python:3.9
-    parallelism: 4
     
     steps:
       - checkout
@@ -19,6 +18,3 @@ jobs:
       - run:
           name: Run tests
           command: tox
-      - run:
-          name: Try splitting
-          command: echo tests/test_* | circleci tests split | xargs -n 1 echo
