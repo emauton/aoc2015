@@ -1,9 +1,13 @@
 version: 2.1
 
+orbs:
+  windows: circleci/windows@2.4.1
+
 workflows:
   test: 
     jobs:
       - test
+      - wintest
 
 jobs:
   test:
@@ -18,3 +22,11 @@ jobs:
       - run:
           name: Run tests
           command: tox
+
+  wintest:
+    executor:
+      name: windows/default
+      size: medium
+    steps:
+      - checkout
+      - run: 'Write-Host ''Hello, Windows'''
